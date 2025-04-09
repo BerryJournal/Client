@@ -14,7 +14,7 @@ export default function RootLayout({
 	return (
 		<div className='flex'>
 			<Sidebar />
-			<div className='p-[40px] w-full max-h-screen overflow-auto'>
+			<div className='p-[40px] flex flex-col w-full max-h-screen overflow-auto'>
 				{children}
 			</div>
 		</div>
