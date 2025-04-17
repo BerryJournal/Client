@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 const Sidebar = () => {
 	const router = useRouter()
 	const path = usePathname()
-	let role = 2
+	let currentRole = 1
 	const studentMenuItems = [
 		<MenuItem
 			title='Главная'
@@ -49,22 +49,70 @@ const Sidebar = () => {
 		/>,
 	]
 
+	const adminMenuItems = [
+		<MenuItem
+			title='Главная'
+			logo='/icons/main.svg'
+			onClick={() => router.push('/main')}
+			isActive={path === '/main'}
+		/>,
+		<MenuItem
+			title='Новости'
+			logo='/icons/main.svg'
+			onClick={() => router.push('/news')}
+			isActive={path.split('/')[1] == 'news'}
+		/>,
+		<MenuItem
+			title='Пользователи'
+			logo='/icons/main.svg'
+			onClick={() => router.push('/users')}
+			isActive={path.split('/')[1] == 'users'}
+		/>,
+		<MenuItem
+			title='Специальности'
+			logo='/icons/main.svg'
+			onClick={() => router.push('/speciality')}
+			isActive={path.split('/')[1] == 'speciality'}
+		/>,
+		<MenuItem
+			title='Группы'
+			logo='/icons/main.svg'
+			onClick={() => router.push('/groups')}
+			isActive={path.split('/')[1] == 'groups'}
+		/>,
+		<MenuItem
+			title='Предметы'
+			logo='/icons/main.svg'
+			onClick={() => router.push('/subjects')}
+			isActive={path.split('/')[1] == 'subjects'}
+		/>,
+	]
+	const role = [
+		{
+			name: 'Администратор',
+			menu: adminMenuItems,
+		},
+		{
+			name: 'Преподаватель',
+			menu: teacherMenuItems,
+		},
+		{
+			name: 'Студент',
+			menu: studentMenuItems,
+		},
+	]
+
 	return (
 		<SideBar
 			header='BerryJournal'
 			logo='/logo.svg'
-			menuItems={
-				role == 1
-					? studentMenuItems
-					: role == 2
-					? teacherMenuItems
-					: teacherMenuItems
-			}
+			menuItems={role[currentRole - 1].menu}
 			footerItem={
 				<FooterItem
 					avatar='/icons/avatar.png'
 					name='Иванов И. И.'
-					role='Студент'
+					role={role[currentRole - 1].name}
+					onClick={() => router.push('/')}
 				/>
 			}
 		/>

@@ -20,6 +20,7 @@ export interface ButtonProps {
 	width?: 'auto' | 'max'
 	styles?: {}
 	onClick?: () => void
+	className?: string
 }
 
 export const Button = ({
@@ -29,6 +30,7 @@ export const Button = ({
 	width = 'auto',
 	styles,
 	onClick,
+	className,
 	...props
 }: ButtonProps) => {
 	return (
@@ -39,6 +41,7 @@ export const Button = ({
 				`bj-button--${size}`,
 				`bj-button--${variant}`,
 				`bj-button--${width}`,
+				className,
 			].join(' ')}
 			style={{ ...styles }}
 			onClick={onClick}

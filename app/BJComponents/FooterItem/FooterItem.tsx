@@ -5,7 +5,7 @@ export interface FooterItemProps {
 	name: string
 	role: string
 	logoutIcon?: string
-	onClick?: () => {}
+	onClick?: () => void
 }
 
 export const FooterItem = ({

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button, Modal } from './BJComponents'
 import Header from './components/Header/Header'
-import styles from './index.module.scss'
 
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -15,13 +14,17 @@ export default function Home() {
 		<>
 			<Header />
 
-			<div className={styles.main}>
-				<div className={styles.left}>
-					<h2>Цифровая образовательная платформа</h2>
-					<h1>BerryJournal</h1>
+			<div className='w-screen h-screen flex justify-between items-center px-[160px]'>
+				<div className='font-bold'>
+					<h2 className='text-[36px]'>Цифровая образовательная платформа</h2>
+					<h1 className='text-[46px] mb-[20px]'>BerryJournal</h1>
 
-					<div className={styles.buttons}>
-						<Button size='xl' onClick={() => setIsModalOpen(true)}>
+					<div className=''>
+						<Button
+							size='xl'
+							onClick={() => setIsModalOpen(true)}
+							className='mr-[20px]'
+						>
 							Войти
 						</Button>
 						<Button size='xl' variant='outlined'>
@@ -34,6 +37,7 @@ export default function Home() {
 					alt='Главная студента'
 					width={1920}
 					height={1080}
+					className='w-[65%]'
 				/>
 			</div>
 
@@ -48,12 +52,25 @@ export default function Home() {
 					</Button>,
 				]}
 			>
-				<form className={styles.form}>
-					<label htmlFor=''>Логин</label>
-					<input type='text' />
+				<form className='flex flex-col'>
+					<label htmlFor='' className='text-[20px] mb-[5px]'>
+						Логин
+					</label>
+					<input
+						type='text'
+						className='w-[360px] h-[45px] text-[18px] px-[15px] rounded-[10px] bg-white text-black'
+					/>
 
-					<label htmlFor=''>Пароль</label>
-					<input type='password' />
+					<label
+						htmlFor=''
+						className='text-[20px] mb-[5px] mt-[15px] text-[18px]'
+					>
+						Пароль
+					</label>
+					<input
+						type='password'
+						className='w-[360px] h-[45px] text-[18px] px-[15px] rounded-[10px] bg-white text-black'
+					/>
 				</form>
 			</Modal>
 		</>

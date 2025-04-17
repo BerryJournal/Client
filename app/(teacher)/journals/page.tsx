@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-export default function Grade() {
+export default function Journals() {
 	const router = useRouter()
 	return (
 		<>
@@ -46,7 +46,7 @@ export default function Grade() {
 					<h3 className='text-[25px] mb-[10px]'>Группы</h3>
 					<div className='flex flex-col gap-[5px]'>
 						<div
-							onClick={() => router.push('/grade/123')}
+							onClick={() => router.push('/journals/123')}
 							className='flex justify-between items-center p-[15px] w-full rounded-[5px] border-2 border-white transition-[0.3s] cursor-pointer hover:bg-[#1b1a17]'
 						>
 							<h4 className='text-[20px] font-light'>
