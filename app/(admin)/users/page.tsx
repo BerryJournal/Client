@@ -1,17 +1,17 @@
 'use client'
 
 import { Button } from '@/app/BJComponents'
-import CreateUser from '@/app/components/Users/CreateUser/CreateUser'
+import CreateUser from '@/app/components/UsersSidebar/CreateUser'
 import Image from 'next/image'
 
-export default function News() {
+export default function Users() {
 	return (
 		<>
 			<div className='flex justify-between pb-[30px]'>
 				<h2 className='text-[32px]'>Пользователи</h2>
 				<Button size='m'>Добавить пользователя</Button>
 			</div>
-			<div className='w-full h-full max-h-full flex flex-col overflow-auto bg-[#232523] rounded-[10px]'>
+			<div className='w-full h-full max-h-full flex flex-col bg-[#232523] overflow-auto rounded-[10px]'>
 				<div className='w-full px-[35px] py-[25px] border-b-[3px] border-[#1b1a17] flex gap-[30px] text-[18px]'>
 					<input
 						type='text'
@@ -40,9 +40,9 @@ export default function News() {
 						</select>
 					</label>
 				</div>
-				<div className='w-full h-full flex'>
-					<div className='h-full w-5/8 border-r-[3px] border-[#1b1a17] overflow-auto'>
-						<div className='flex gap-[15px] p-[35px]'>
+				<div className='w-full h-full flex overflow-auto'>
+					<div className='min-h-full w-5/8 border-r-[3px] border-[#1b1a17] overflow-auto'>
+						<div className='flex flex-col gap-[15px] p-[35px] min-h-full'>
 							<div className='w-full p-[20px] flex bg-[#1b1a17] rounded-[10px] gap-[10px]'>
 								<Image
 									src={'/icons/avatar.png'}
@@ -75,7 +75,7 @@ export default function News() {
 							</div>
 						</div>
 					</div>
-					<div className='h-full w-3/8 flex flex-col justify-center items-center overflow-auto p-[35px]'>
+					<div className='h-full w-3/8 flex flex-col items-center overflow-auto p-[35px]'>
 						<CreateUser />
 					</div>
 				</div>
