@@ -1,12 +1,31 @@
 'use client'
 
 import { FooterItem, MenuItem, SideBar } from '@/app/BJComponents'
+import { serverAPI } from '@/app/utils/axios'
 import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const Sidebar = () => {
+	const [userData, setUserData] = useState<any>()
 	const router = useRouter()
 	const path = usePathname()
-	let currentRole = 1
+
+	const getUserData = () => {
+		serverAPI
+			.get('/getUser', {
+				headers: {
+					Authorization: 'Bearer ' + localStorage.getItem('token'),
+				},
+			})
+			.then(e => {
+				setUserData(e.data.message)
+			})
+	}
+
+	useEffect(() => {
+		getUserData()
+	}, [])
+
 	const studentMenuItems = [
 		<MenuItem
 			title='Главная'
@@ -89,6 +108,10 @@ const Sidebar = () => {
 	]
 	const role = [
 		{
+			name: 'Гл. администратор',
+			menu: adminMenuItems,
+		},
+		{
 			name: 'Администратор',
 			menu: adminMenuItems,
 		},
@@ -106,12 +129,15 @@ const Sidebar = () => {
 		<SideBar
 			header='BerryJournal'
 			logo='/logo.svg'
-			menuItems={role[currentRole - 1].menu}
+			menuItems={userData && role[userData.role_id - 1].menu}
 			footerItem={
 				<FooterItem
 					avatar='/icons/avatar.png'
-					name='Иванов И. И.'
-					role={role[currentRole - 1].name}
+					name={
+						userData &&
+						`${userData.surname} ${userData.name[0]}. ${userData.patronymic[0]}.`
+					}
+					role={userData && role[userData.role_id - 1].name}
 					onClick={() => router.push('/')}
 				/>
 			}

@@ -1,15 +1,29 @@
 'use client'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Button, Modal } from './BJComponents'
 import Header from './components/Header/Header'
+import { serverAPI } from './utils/axios'
 
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [data, setData] = useState({ email: '', password: '' })
+	const searchParams = useSearchParams()
+
+	useEffect(() => {
+		searchParams.get('modal') && setIsModalOpen(true)
+	}, [])
 
 	const router = useRouter()
+
+	const login = () => {
+		serverAPI.post('/login', data).then(e => {
+			localStorage.setItem('token', e.data.token)
+			router.push('/main')
+		})
+	}
 	return (
 		<>
 			<Header />
@@ -47,17 +61,18 @@ export default function Home() {
 				titlePosition='center'
 				closeButtonClick={() => setIsModalOpen(false)}
 				footer={[
-					<Button width='max' size='xl' onClick={() => router.push('/main')}>
+					<Button width='max' size='xl' onClick={login}>
 						Вход
 					</Button>,
 				]}
 			>
 				<form className='flex flex-col'>
 					<label htmlFor='' className='text-[20px] mb-[5px]'>
-						Логин
+						Email
 					</label>
 					<input
 						type='text'
+						onChange={e => setData({ ...data, email: e.currentTarget.value })}
 						className='w-[360px] h-[45px] text-[18px] px-[15px] rounded-[10px] bg-white text-black'
 					/>
 
@@ -69,6 +84,9 @@ export default function Home() {
 					</label>
 					<input
 						type='password'
+						onChange={e =>
+							setData({ ...data, password: e.currentTarget.value })
+						}
 						className='w-[360px] h-[45px] text-[18px] px-[15px] rounded-[10px] bg-white text-black'
 					/>
 				</form>
