@@ -1,7 +1,7 @@
 'use client'
 
-import { FooterItem, MenuItem, SideBar } from '@/app/BJComponents'
-import { serverAPI } from '@/app/utils/axios'
+import { FooterItem, MenuItem, SideBar, Skeleton } from '@/app/BJComponents'
+import { initializeCSRF, serverAPI } from '@/app/utils/axios'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -10,7 +10,7 @@ const Sidebar = () => {
 	const router = useRouter()
 	const path = usePathname()
 
-	const getUserData = () => {
+	const getUserData = async () => {
 		serverAPI
 			.get('/getUser', {
 				headers: {
@@ -20,9 +20,26 @@ const Sidebar = () => {
 			.then(e => {
 				setUserData(e.data.message)
 			})
+			.catch(e => {
+				if (e.response.status == 401) {
+					localStorage.removeItem('token')
+					router.push('/')
+				}
+			})
+	}
+
+	const logout = async () => {
+		serverAPI.get('/logout', {
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
+			},
+		})
+		localStorage.removeItem('token')
+		router.push('/')
 	}
 
 	useEffect(() => {
+		initializeCSRF()
 		getUserData()
 	}, [])
 
@@ -129,17 +146,29 @@ const Sidebar = () => {
 		<SideBar
 			header='BerryJournal'
 			logo='/logo.svg'
-			menuItems={userData && role[userData.role_id - 1].menu}
+			menuItems={
+				userData
+					? role[userData.role_id - 1].menu
+					: [
+							<Skeleton className='w-full h-[34px] px-[10px] py-[5px] mb-[5px]' />,
+							<Skeleton className='w-full h-[34px] px-[10px] py-[5px] mb-[5px]' />,
+							<Skeleton className='w-full h-[34px] px-[10px] py-[5px] mb-[5px]' />,
+							<Skeleton className='w-full h-[34px] px-[10px] py-[5px] mb-[5px]' />,
+					  ]
+			}
 			footerItem={
-				<FooterItem
-					avatar='/icons/avatar.png'
-					name={
-						userData &&
-						`${userData.surname} ${userData.name[0]}. ${userData.patronymic[0]}.`
-					}
-					role={userData && role[userData.role_id - 1].name}
-					onClick={() => router.push('/')}
-				/>
+				userData ? (
+					<FooterItem
+						avatar='/icons/avatar.png'
+						name={`${userData.surname} ${userData.name[0]}. ${userData.patronymic[0]}.`}
+						role={role[userData.role_id - 1].name}
+						onClick={logout}
+					/>
+				) : (
+					<div className='w-full border-t-1 border-white w-full p-[15px]'>
+						<Skeleton className='w-full h-[42px] ' />
+					</div>
+				)
 			}
 		/>
 	)

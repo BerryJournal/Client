@@ -27,7 +27,7 @@ export const Modal = ({
 				<div className={['bj-modal', `bj-modal--${modalPosition}`].join(' ')}>
 					<div className='bj-modal-content'>
 						{closeButtonClick && (
-							<div className='bj-modal-close'>
+							<div className='bj-modal-close cursor-pointer'>
 								<Image
 									src={'/icons/close.svg'}
 									alt='Закрыть'

@@ -2,7 +2,8 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 
 export const serverAPI = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
+	baseURL: process.env.NEXT_PUBLIC_SERVER_URL + '/api',
+	withCredentials: true,
 })
 
 serverAPI.interceptors.response.use(
@@ -15,3 +16,7 @@ serverAPI.interceptors.response.use(
 		return Promise.reject(error)
 	}
 )
+
+export const initializeCSRF = async () => {
+	serverAPI.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/sanctum/csrf-cookie`)
+}

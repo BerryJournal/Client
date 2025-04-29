@@ -3,9 +3,10 @@
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { Button, Modal } from './BJComponents'
 import Header from './components/Header/Header'
-import { serverAPI } from './utils/axios'
+import { initializeCSRF, serverAPI } from './utils/axios'
 
 export default function Home() {
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -13,16 +14,47 @@ export default function Home() {
 	const searchParams = useSearchParams()
 
 	useEffect(() => {
-		searchParams.get('modal') && setIsModalOpen(true)
+		localStorage.getItem('token') && router.push('/main')
+		searchParams.get('login') && setIsModalOpen(true)
+		initializeCSRF()
 	}, [])
 
 	const router = useRouter()
 
 	const login = () => {
-		serverAPI.post('/login', data).then(e => {
-			localStorage.setItem('token', e.data.token)
-			router.push('/main')
-		})
+		if (data.email == '' || data.password == '') {
+			return toast('Поля не должны быть пустыми', {
+				type: 'error',
+			})
+		}
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+			return toast('Email должен быть валидным!', {
+				type: 'error',
+			})
+		}
+		const toastID = toast.loading('Проверка данных...')
+		serverAPI
+			.post('/login', data)
+			.then(e => {
+				localStorage.setItem('token', e.data.token)
+				toast.update(toastID, {
+					render: 'Успешно',
+					type: 'success',
+					isLoading: false,
+					autoClose: 3000,
+					closeButton: true,
+				})
+				router.push('/main')
+			})
+			.catch(e => {
+				toast.update(toastID, {
+					render: e.response.data.error,
+					type: 'error',
+					isLoading: false,
+					autoClose: 3000,
+					closeButton: true,
+				})
+			})
 	}
 	return (
 		<>
@@ -66,7 +98,13 @@ export default function Home() {
 					</Button>,
 				]}
 			>
-				<form className='flex flex-col'>
+				<form
+					className='flex flex-col'
+					onSubmit={e => {
+						e.preventDefault()
+						login()
+					}}
+				>
 					<label htmlFor='' className='text-[20px] mb-[5px]'>
 						Email
 					</label>

@@ -3,8 +3,9 @@
 .bj-menu-item {
 	display: flex;
 	align-items: center;
-	filter: grayscale(1);
-	color: $font-second-color;
+	// filter: grayscale(1);
+	// color: $font-second-color;
+	color: $font-color;
 	transition: 0.3s;
 	padding: 5px 10px;
 	margin-bottom: 5px;
@@ -16,7 +17,8 @@
 
 	&-select {
 		color: $font-color;
-		filter: grayscale(0);
+		background: $primary-color;
+		// filter: grayscale(0);
 	}
 	&-img {
 		width: 22px;

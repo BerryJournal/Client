@@ -21,6 +21,7 @@ export interface ButtonProps {
 	styles?: {}
 	onClick?: () => void
 	className?: string
+	type?: 'button' | 'submit'
 }
 
 export const Button = ({
@@ -31,11 +32,12 @@ export const Button = ({
 	styles,
 	onClick,
 	className,
+	type = 'button',
 	...props
 }: ButtonProps) => {
 	return (
 		<button
-			type='button'
+			type={type}
 			className={[
 				'bj-button',
 				`bj-button--${size}`,

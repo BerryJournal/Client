@@ -1,7 +1,7 @@
 'use client'
 
 import { toast } from 'react-toastify'
-import { Button } from '../BJComponents'
+import { Button } from '../../BJComponents'
 
 export default function Main() {
 	return (

@@ -1,8 +1,46 @@
 'use client'
 
 import { Button } from '@/app/BJComponents'
+import { IGroup } from '@/app/types/types'
+import { serverAPI } from '@/app/utils/axios'
+import { Dispatch } from 'react'
+import { toast } from 'react-toastify'
+import CreateUser from './CreateUser'
 
-const DeleteUser = () => {
+interface DeleteUserProps {
+	id: string
+	setSidebar: Dispatch<any>
+	setUpdate: Dispatch<boolean>
+	update: boolean
+	groups: IGroup[]
+}
+
+const DeleteUser = ({
+	id,
+	setSidebar,
+	setUpdate,
+	update,
+	groups,
+}: DeleteUserProps) => {
+	const deleteUser = () => {
+		serverAPI
+			.delete(`/admin/deleteUser/${id}`, {
+				headers: {
+					Authorization: 'Bearer ' + localStorage.getItem('token'),
+				},
+			})
+			.then(e => toast('Пользователь удален!', { type: 'success' }))
+		setSidebar(
+			<CreateUser
+				setUpdate={setUpdate}
+				update={update}
+				groups={groups}
+				setSidebar={setSidebar}
+			/>
+		)
+		setUpdate(!update)
+	}
+
 	const customStyles = {
 		control: (provided: any) => ({
 			...provided,
@@ -39,7 +77,12 @@ const DeleteUser = () => {
 				<h3 className='text-[25px] mb-[30px] mx-[10px]'>
 					Подтвердите удаление пользователя
 				</h3>
-				<Button width='max' variant='danger' className='mb-[20px]'>
+				<Button
+					width='max'
+					variant='danger'
+					onClick={deleteUser}
+					className='mb-[20px]'
+				>
 					Удалить
 				</Button>
 			</div>
