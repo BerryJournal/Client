@@ -30,13 +30,13 @@ export interface IRole {
 }
 
 export interface IGroup {
-	id: string
+	id?: string
 	name: string
-	course: number
-	max_course: number
-	admissioon_date: Date
-	classroomTeacher_id: string
-	speciality_id: string
+	course: number | string
+	max_course?: number | string
+	admission_date: Date | string
+	classroomTeacher_id?: string | null
+	speciality_id: string | null
 	organization_id?: string
 	isArchive?: boolean
 	organization?: IOrganization
@@ -45,7 +45,7 @@ export interface IGroup {
 }
 
 export interface ISpeciality {
-	id: string
+	id?: string
 	name: string
 	organization_id?: string
 	organization?: IOrganization

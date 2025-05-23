@@ -6,7 +6,7 @@ import { serverAPI } from '@/app/utils/axios'
 import dynamic from 'next/dynamic'
 import { Dispatch, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import CreateUser from './CreateUser'
+import CreateUser from './CreateGroup'
 
 const Select = dynamic(() => import('react-select'), { ssr: false })
 
