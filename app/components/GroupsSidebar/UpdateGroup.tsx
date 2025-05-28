@@ -1,102 +1,77 @@
 'use client'
 
 import { Button, Spinner } from '@/app/BJComponents'
-import { IGroup, IUser } from '@/app/types/types'
+import { IGroup, ISpeciality, IUser } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import dynamic from 'next/dynamic'
 import { Dispatch, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import CreateUser from './CreateGroup'
+import CreateGroup from './CreateGroup'
 
 const Select = dynamic(() => import('react-select'), { ssr: false })
 
-interface UpdateUserProps {
+interface UpdateGroupProps {
 	id: string
-	setSidebar?: Dispatch<any>
+	setSidebar: Dispatch<any>
 	setUpdate: Dispatch<boolean>
 	update: boolean
-	groups: IGroup[]
+	specialities: ISpeciality[]
+	teachers: IUser[]
 }
 
-const UpdateUser = ({
+const UpdateGroup = ({
 	id,
 	setSidebar,
 	setUpdate,
 	update,
-	groups,
-}: UpdateUserProps) => {
-	const [userData, setUserData] = useState<IUser | null>()
+	specialities,
+	teachers,
+}: UpdateGroupProps) => {
+	const [groupData, setGroupData] = useState<IGroup | null>()
 
-	const getUserData = () => {
+	useEffect(() => {
+		setGroupData(null)
+		getGroupData()
+	}, [id])
+
+	const getGroupData = () => {
 		serverAPI
-			.get(`/admin/getUserById/${id}`, {
+			.get(`/admin/getGroupById/${id}`, {
 				headers: {
 					Authorization: 'Bearer ' + localStorage.getItem('token'),
 				},
 			})
 			.then((e: any) => {
-				setUserData(e.data.message)
+				setGroupData(e.data.message)
 			})
 	}
 
-	const updateData = () => {
-		setUpdate(!update)
-		setSidebar &&
-			setSidebar(
-				<CreateUser
-					setUpdate={setUpdate}
-					update={update}
-					groups={groups}
-					setSidebar={setSidebar}
-				/>
-			)
-	}
-
-	useEffect(() => {
-		setUserData(null)
-		getUserData()
-	}, [id])
-
-	const updateUser = () => {
-		if (userData!.name == '' || userData!.surname == '') {
+	const updateGroup = () => {
+		if (groupData!.name == '' || groupData!.course == '') {
 			return toast('Заполните все поля!', {
 				type: 'error',
 			})
 		}
-		userData!.patronymic == '' &&
-			setUserData({ ...userData!, patronymic: null })
-
 		serverAPI
-			.put('/admin/updateUser', userData, {
+			.put('/admin/updateGroup', groupData, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			})
 			.then(e => {
-				toast('Пользователь обновлен', {
+				toast('Группа обновлена', {
 					type: 'success',
 				})
 				setUpdate(!update)
-			})
-			.catch(e => {
-				toast(e.response.data, {
-					type: 'error',
-				})
-			})
-	}
-
-	const sendConfirmation = () => {
-		serverAPI
-			.get(`/admin/sendConfirmation/${id}`, {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
-				},
-			})
-			.then(e => {
-				toast(e.data.message, {
-					type: 'success',
-				})
-				setUpdate(!update)
+				setSidebar(
+					<CreateGroup
+						setUpdate={setUpdate}
+						update={update}
+						specialities={specialities}
+						teachers={teachers}
+						setSidebar={setSidebar}
+					/>
+				)
 			})
 			.catch(e => {
 				toast(e.response.data, {
@@ -139,95 +114,131 @@ const UpdateUser = ({
 			className='flex flex-col items-center justify-between h-full'
 			onSubmit={e => {
 				e.preventDefault()
-				updateUser()
+				updateGroup()
 			}}
 		>
-			{userData ? (
+			{groupData ? (
 				<>
 					<div className='flex flex-col items-center'>
 						<h3 className='text-[25px] mb-[30px] mx-[10px]'>
-							Редактирование пользователя
+							Редактирование группы
 						</h3>
 						<div className='w-full flex flex-col mb-[20px]'>
 							<label htmlFor='' className='text-[20px] mb-[5px]'>
-								ФИО
+								Наименование
 							</label>
 							<input
 								type='text'
-								className='bg-white rounded-[10px] px-[15px] py-[8px] text-[18px] text-[#1B1A17]'
+								defaultValue={groupData.name}
 								onChange={e => {
-									let arrayData = e.currentTarget.value.split(' ')
-									setUserData({
-										...userData,
-										surname: arrayData[0],
-										name: arrayData[1],
-										patronymic: arrayData[2],
+									setGroupData({
+										...groupData,
+										name: e.currentTarget.value,
 									})
 								}}
-								defaultValue={`${userData.surname} ${userData.name} ${
-									userData.patronymic != null ? userData.patronymic : ''
-								}`}
+								className='bg-white rounded-[10px] px-[15px] py-[8px] text-[18px] text-[#1B1A17]'
 							/>
 						</div>
 						<div className='w-full flex flex-col mb-[20px]'>
 							<label htmlFor='' className='text-[20px] mb-[5px]'>
-								Роль
+								Курс
 							</label>
-							<Select
-								isSearchable={false}
-								placeholder='Роль...'
-								styles={customStyles}
-								options={[
-									{ value: '4', label: 'Студент' },
-									{ value: '3', label: 'Преподаватель' },
-									{ value: '2', label: 'Администратор' },
-								]}
-								defaultValue={{
-									value: userData.role!.id,
-									label: userData.role!.name,
+							<input
+								type='number'
+								defaultValue={groupData.course}
+								onChange={e => {
+									;+e.currentTarget.value <= 0 || +e.currentTarget.value > 5
+										? setGroupData({ ...groupData, course: 1 })
+										: setGroupData({
+												...groupData,
+												course: +e.currentTarget.value,
+										  })
 								}}
-								isDisabled
+								onBlur={e => {
+									;+e.currentTarget.value <= 0 || +e.currentTarget.value > 5
+										? (e.currentTarget.value = '1')
+										: ''
+								}}
+								className='bg-white rounded-[10px] px-[15px] py-[8px] text-[18px] text-[#1B1A17]'
 							/>
 						</div>
-						{userData.role_id == 4 && (
-							<div className='w-full flex flex-col mb-[20px]'>
-								<label htmlFor='' className='text-[20px] mb-[5px]'>
-									Группа
-								</label>
-
-								<Select
-									styles={customStyles}
-									placeholder='Группа...'
-									noOptionsMessage={() => 'Нет подходящих групп'}
-									defaultValue={
-										userData.group == null
-											? { value: null, label: 'Нет' }
-											: { value: userData.group.id, label: userData.group.name }
-									}
-									onChange={(e: any) => {
-										setUserData({ ...userData, group_id: e.value })
-									}}
-									options={[
-										{ value: null, label: 'Нет' },
-										...groups.map((el: any) => {
-											return { value: el.id, label: el.name }
-										}),
-									]}
-								/>
-							</div>
-						)}
+						<div className='w-full flex flex-col mb-[20px]'>
+							{
+								<>
+									<label htmlFor='' className='text-[20px] mb-[5px]'>
+										Классный руководитель
+									</label>
+									<Select
+										styles={customStyles}
+										placeholder='Классный руководитель...'
+										defaultValue={
+											groupData.classroomTeacher_id == null
+												? { value: null, label: 'Нет' }
+												: {
+														value: groupData.classroomTeacher_id,
+														label: `${groupData.classroom_teacher!.surname} ${
+															groupData.classroom_teacher!.name
+														} ${
+															groupData.classroom_teacher!.patronymic
+																? groupData.classroom_teacher!.patronymic
+																: ''
+														}`,
+												  }
+										}
+										onChange={(e: any) => {
+											setGroupData({
+												...groupData,
+												classroomTeacher_id: e.value,
+											})
+										}}
+										noOptionsMessage={() => 'Нет подходящих преподавателей'}
+										options={[
+											{ value: null, label: 'Нет' },
+											...teachers.map((el: IUser) => {
+												return {
+													value: el.id,
+													label: `${el.surname} ${el.name} ${
+														el.patronymic ? el.patronymic : ''
+													}`,
+												}
+											}),
+										]}
+									/>
+								</>
+							}
+						</div>
+						<div className='w-full flex flex-col mb-[20px]'>
+							{
+								<>
+									<label htmlFor='' className='text-[20px] mb-[5px]'>
+										Специальность
+									</label>
+									<Select
+										styles={customStyles}
+										placeholder='Специальность...'
+										defaultValue={{
+											value: groupData.speciality_id,
+											label: groupData.speciality?.name,
+										}}
+										onChange={(e: any) => {
+											setGroupData({ ...groupData, speciality_id: e.value })
+										}}
+										noOptionsMessage={() => 'Нет подходящих специальностей'}
+										options={[
+											{ value: null, label: 'Нет' },
+											...specialities.map((el: ISpeciality) => {
+												return {
+													value: el.id,
+													label: `${el.name}`,
+												}
+											}),
+										]}
+									/>
+								</>
+							}
+						</div>
 					</div>
 					<div className='w-full'>
-						{userData.isRegister == false && (
-							<Button
-								onClick={sendConfirmation}
-								width='max'
-								variant='danger'
-								className='mb-[20px]'
-							>
-								Отправить приглашение
-							</Button>
-						)}
 						<Button width='max' type='submit'>
 							Сохранить
 						</Button>
@@ -240,4 +251,4 @@ const UpdateUser = ({
 	)
 }
 
-export default UpdateUser
+export default UpdateGroup

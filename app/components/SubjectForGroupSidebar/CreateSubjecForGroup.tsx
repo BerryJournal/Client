@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Spinner } from '@/app/BJComponents'
-import { IGroup, ISpeciality, IUser } from '@/app/types/types'
+import { IDataForSubject, IGroup, ISubject, IUser } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import dynamic from 'next/dynamic'
 import { Dispatch, useState } from 'react'
@@ -9,27 +9,27 @@ import { toast } from 'react-toastify'
 
 const Select = dynamic(() => import('react-select'), { ssr: false })
 
-interface CreateGroupProps {
+interface CreateSubjectForGroupProps {
 	setUpdate: Dispatch<boolean>
 	update: boolean
-	specialities: ISpeciality[]
-	teachers: IUser[]
+	dataForSubject: IDataForSubject
 	setSidebar: Dispatch<any>
 }
 
-const CreateGroup = ({
+const CreateSubjectForGroup = ({
 	setUpdate,
 	update,
 	setSidebar,
-	specialities,
-	teachers,
-}: CreateGroupProps) => {
-	const [groupData, setGroupData] = useState<IGroup>({
-		name: '',
-		course: 1,
-		speciality_id: null,
-		classroomTeacher_id: null,
-		admission_date: '',
+	dataForSubject,
+}: CreateSubjectForGroupProps) => {
+	const [subjectData, setSubjectData] = useState<{
+		group_id: string | null
+		teacher_id: string | null
+		subject_id: string | null
+	}>({
+		group_id: null,
+		subject_id: null,
+		teacher_id: null,
 	})
 
 	const customStyles = {
@@ -61,20 +61,24 @@ const CreateGroup = ({
 		}),
 	}
 
-	const createGroup = () => {
-		if (groupData.name == '' || groupData.course == '') {
+	const createSubjectForGroup = () => {
+		if (
+			subjectData?.group_id == null ||
+			subjectData?.subject_id == null ||
+			subjectData?.teacher_id == null
+		) {
 			return toast('Заполните все поля!', {
 				type: 'error',
 			})
 		}
 		serverAPI
-			.post('/admin/addGroup', groupData, {
+			.post('/admin/addSubjectForGroup', subjectData, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			})
 			.then(e => {
-				toast('Группа добавлена', {
+				toast('Предмет для группы добавлен', {
 					type: 'success',
 				})
 				setSidebar(<Spinner />)
@@ -91,69 +95,34 @@ const CreateGroup = ({
 		<form
 			onSubmit={e => {
 				e.preventDefault()
-				createGroup()
+				createSubjectForGroup()
 			}}
 			className='flex flex-col items-center justify-between h-full'
 		>
 			<div className='flex flex-col items-center'>
-				<h3 className='text-[25px] mb-[30px] mx-[10px]'>Добавление группы</h3>
-				<div className='w-full flex flex-col mb-[20px]'>
-					<label htmlFor='' className='text-[20px] mb-[5px]'>
-						Наименование
-					</label>
-					<input
-						type='text'
-						onChange={e => {
-							setGroupData({
-								...groupData,
-								name: e.currentTarget.value,
-							})
-						}}
-						className='bg-white rounded-[10px] px-[15px] py-[8px] text-[18px] text-[#1B1A17]'
-					/>
-				</div>
-				<div className='w-full flex flex-col mb-[20px]'>
-					<label htmlFor='' className='text-[20px] mb-[5px]'>
-						Курс
-					</label>
-					<input
-						type='number'
-						defaultValue={1}
-						onChange={e => {
-							;+e.currentTarget.value <= 0 || +e.currentTarget.value > 5
-								? setGroupData({ ...groupData, course: 1 })
-								: setGroupData({ ...groupData, course: +e.currentTarget.value })
-						}}
-						onBlur={e => {
-							;+e.currentTarget.value <= 0 || +e.currentTarget.value > 5
-								? (e.currentTarget.value = '1')
-								: ''
-						}}
-						className='bg-white rounded-[10px] px-[15px] py-[8px] text-[18px] text-[#1B1A17]'
-					/>
-				</div>
+				<h3 className='text-[25px] mb-[30px] mx-[10px]'>
+					Добавление предмета для группы
+				</h3>
 				<div className='w-full flex flex-col mb-[20px]'>
 					{
 						<>
 							<label htmlFor='' className='text-[20px] mb-[5px]'>
-								Классный руководитель
+								Группа
 							</label>
 							<Select
 								styles={customStyles}
-								placeholder='Классный руководитель...'
+								placeholder='Группа...'
 								defaultValue={{ value: null, label: 'Нет' }}
 								onChange={(e: any) => {
-									setGroupData({ ...groupData, classroomTeacher_id: e.value })
+									setSubjectData({ ...subjectData, group_id: e.value })
 								}}
-								noOptionsMessage={() => 'Нет подходящих преподавателей'}
+								noOptionsMessage={() => 'Нет подходящих групп'}
 								options={[
 									{ value: null, label: 'Нет' },
-									...teachers.map((el: IUser) => {
+									...dataForSubject.groups.map((el: IGroup) => {
 										return {
 											value: el.id,
-											label: `${el.surname} ${el.name} ${
-												el.patronymic ? el.patronymic : ''
-											}`,
+											label: `${el.name}`,
 										}
 									}),
 								]}
@@ -165,22 +134,51 @@ const CreateGroup = ({
 					{
 						<>
 							<label htmlFor='' className='text-[20px] mb-[5px]'>
-								Специальность
+								Предмет
 							</label>
 							<Select
 								styles={customStyles}
-								placeholder='Специальность...'
+								placeholder='Предмет...'
 								defaultValue={{ value: null, label: 'Нет' }}
 								onChange={(e: any) => {
-									setGroupData({ ...groupData, speciality_id: e.value })
+									setSubjectData({ ...subjectData, subject_id: e.value })
 								}}
-								noOptionsMessage={() => 'Нет подходящих специальностей'}
+								noOptionsMessage={() => 'Нет подходящих предметов'}
 								options={[
 									{ value: null, label: 'Нет' },
-									...specialities.map((el: ISpeciality) => {
+									...dataForSubject.subjects.map((el: ISubject) => {
 										return {
 											value: el.id,
 											label: `${el.name}`,
+										}
+									}),
+								]}
+							/>
+						</>
+					}
+				</div>
+				<div className='w-full flex flex-col mb-[20px]'>
+					{
+						<>
+							<label htmlFor='' className='text-[20px] mb-[5px]'>
+								Преподаватель
+							</label>
+							<Select
+								styles={customStyles}
+								placeholder='Преподаватель...'
+								defaultValue={{ value: null, label: 'Нет' }}
+								onChange={(e: any) => {
+									setSubjectData({ ...subjectData, teacher_id: e.value })
+								}}
+								noOptionsMessage={() => 'Нет подходящих преподавателей'}
+								options={[
+									{ value: null, label: 'Нет' },
+									...dataForSubject.teachers.map((el: IUser) => {
+										return {
+											value: el.id,
+											label: `${el.surname} ${el.name} ${
+												el.patronymic ? el.patronymic : ''
+											}`,
 										}
 									}),
 								]}
@@ -196,4 +194,4 @@ const CreateGroup = ({
 	)
 }
 
-export default CreateGroup
+export default CreateSubjectForGroup

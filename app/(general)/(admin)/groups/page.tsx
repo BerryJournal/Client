@@ -2,8 +2,8 @@
 
 import { Button, Skeleton, Spinner } from '@/app/BJComponents'
 import CreateGroup from '@/app/components/GroupsSidebar/CreateGroup'
-import DeleteUser from '@/app/components/UsersSidebar/DeleteUser'
-import UpdateUser from '@/app/components/UsersSidebar/UpdateUser'
+import DeleteGroup from '@/app/components/GroupsSidebar/DeleteGroup'
+import UpdateGroup from '@/app/components/GroupsSidebar/UpdateGroup'
 import { IGroup, ISpeciality, IUser } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
@@ -64,6 +64,9 @@ export default function Users() {
 						)
 					})
 			})
+	}, [])
+
+	useEffect(() => {
 		getGroupsData()
 	}, [update])
 
@@ -120,21 +123,38 @@ export default function Users() {
 												height={40}
 												className='h-[100px] w-[100px]'
 											/>
-											<div className='flex flex-col justify-between w-full'>
+											<div className='flex flex-col w-full'>
 												<div className='text-[20px] flex'>{el.name}</div>
-												<p className='text-[18px]'>{el.classroomTeacher?.id}</p>
+												<p className='text-[18px]'>
+													Классный руководитель:
+													{el.classroom_teacher
+														? ` ${el.classroom_teacher.surname} ${
+																el.classroom_teacher.name[0]
+														  }. ${
+																el.classroom_teacher.patronymic
+																	? el.classroom_teacher.patronymic[0] + '.'
+																	: ''
+														  }`
+														: ' Нет'}
+												</p>
+												<p className='text-[18px]'>
+													{el.students
+														? `Студентов в группе: ${el.students.length}`
+														: ''}
+												</p>
 											</div>
 											<div className='flex justify-end items-end gap-[15px]'>
 												<Button
 													size='s'
 													onClick={() =>
 														setSidebar(
-															<UpdateUser
+															<UpdateGroup
 																id={el.id!}
 																setSidebar={setSidebar}
 																setUpdate={setUpdate}
+																specialities={specialitiesData!}
 																update={update}
-																groups={groupsData}
+																teachers={teachersData!}
 															/>
 														)
 													}
@@ -146,12 +166,13 @@ export default function Users() {
 													variant='danger'
 													onClick={() =>
 														setSidebar(
-															<DeleteUser
+															<DeleteGroup
 																id={el.id!}
 																setSidebar={setSidebar}
 																setUpdate={setUpdate}
 																update={update}
-																groups={groupsData}
+																specialities={specialitiesData!}
+																teachers={teachersData!}
 															/>
 														)
 													}

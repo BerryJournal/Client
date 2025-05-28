@@ -1,89 +1,70 @@
 'use client'
 
 import { Button, Skeleton, Spinner } from '@/app/BJComponents'
-import CreateUser from '@/app/components/UsersSidebar/CreateUser'
-import DeleteUser from '@/app/components/UsersSidebar/DeleteUser'
-import UpdateUser from '@/app/components/UsersSidebar/UpdateUser'
-import { useDebounce } from '@/app/hooks/useDebaunce'
+import CreateSubject from '@/app/components/SubjectSidebar/CreateSubject'
+import DeleteSubject from '@/app/components/SubjectSidebar/DeleteSubject'
+import UpdateSubject from '@/app/components/SubjectSidebar/UpdateSubject'
+import { ISubject } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-export default function Users() {
-	const [usersData, setUsersData] = useState<any>()
-	const [groupsData, setGroupsData] = useState<any>()
+export default function Subjects() {
+	const [subjectData, setSubjectData] = useState<any>()
 	const [update, setUpdate] = useState<boolean>(false)
 	const [searchData, setSearchData] = useState<{
 		search: string
-		role: null | string
-		isreg: null | string
 	}>({
 		search: '',
-		role: null,
-		isreg: null,
 	})
-	const debouncedSearch = useDebounce(searchData.search, 500)
 	const [sidebar, setSidebar] = useState<any>(<Spinner />)
 
-	const getUserData = () => {
+	const getSubjectData = () => {
 		const usersParams = new URLSearchParams()
-		searchData.isreg != null && usersParams.set('isreg', searchData.isreg)
-		searchData.role != null && usersParams.set('role', searchData.role)
 		searchData.search != '' && usersParams.set('search', searchData.search)
 		serverAPI
-			.get('/admin/getAllUsers?' + usersParams.toString(), {
+			.get('/admin/getAllSubjects?' + usersParams.toString(), {
 				headers: {
 					Authorization: 'Bearer ' + localStorage.getItem('token'),
 				},
 			})
 			.then(e => {
-				setUsersData(e.data.message)
-			})
-	}
-
-	useEffect(() => {
-		serverAPI
-			.get('/admin/getAllGroupsName', {
-				headers: {
-					Authorization: 'Bearer ' + localStorage.getItem('token'),
-				},
-			})
-			.then(e => {
-				setGroupsData(e.data.message)
+				setSubjectData(e.data.message)
 				setSidebar(
-					<CreateUser
+					<CreateSubject
 						setUpdate={setUpdate}
 						update={update}
-						groups={e.data.message}
 						setSidebar={setSidebar}
 					/>
 				)
 			})
-		getUserData()
+	}
+
+	useEffect(() => {
+		getSubjectData()
 	}, [update])
 
 	useEffect(() => {
-		getUserData()
-	}, [searchData.isreg, searchData.role, debouncedSearch])
+		getSubjectData()
+	}, [searchData])
 
 	return (
 		<>
 			<div className='flex justify-between pb-[30px]'>
-				<h2 className='text-[32px]'>Пользователи</h2>
+				<h2 className='text-[32px]'>Предметы</h2>
 				<Button
 					size='m'
 					onClick={() =>
 						setSidebar(
-							<CreateUser
+							<CreateSubject
 								setUpdate={setUpdate}
 								update={update}
-								groups={groupsData}
 								setSidebar={setSidebar}
 							/>
 						)
 					}
 				>
-					Добавить пользователя
+					Добавить предмет
 				</Button>
 			</div>
 			<div className='w-full h-full max-h-full flex flex-col bg-[#232523] overflow-auto rounded-[10px]'>
@@ -96,49 +77,12 @@ export default function Users() {
 						}}
 						className='bg-white rounded-[10px] px-[15px] py-[8px] text-[#1B1A17]'
 					/>
-					<label>
-						<select
-							className='bg-white rounded-[10px] px-[15px] py-[8px] text-[#1B1A17]'
-							onChange={e => {
-								setSearchData({
-									...searchData,
-									role:
-										e.currentTarget.value == 'null'
-											? null
-											: e.currentTarget.value,
-								})
-							}}
-						>
-							<option value='null'>Роль</option>
-							<option value='4'>Студент</option>
-							<option value='3'>Преподаватель</option>
-							<option value='2'>Администратор</option>
-						</select>
-					</label>
-					<label>
-						<select
-							className='bg-white rounded-[10px] px-[15px] py-[8px] text-[#1B1A17]'
-							onChange={e => {
-								setSearchData({
-									...searchData,
-									isreg:
-										e.currentTarget.value == 'null'
-											? null
-											: e.currentTarget.value,
-								})
-							}}
-						>
-							<option value='null'>Статус регистрации</option>
-							<option value='1'>Зарегестрирован</option>
-							<option value='0'>Незарегистрирован</option>
-						</select>
-					</label>
 				</div>
 				<div className='w-full h-full flex overflow-auto'>
 					<div className='min-h-full w-5/8 border-r-[3px] border-[#1b1a17] overflow-auto'>
 						<div className='flex flex-col gap-[15px] p-[35px] min-h-full'>
-							{usersData ? (
-								usersData.map((el: any) => {
+							{subjectData ? (
+								subjectData.map((el: ISubject) => {
 									return (
 										<div
 											key={el.id}
@@ -152,37 +96,18 @@ export default function Users() {
 												className='h-[100px] w-[100px]'
 											/>
 											<div className='flex flex-col justify-between w-full'>
-												<div className='text-[20px] flex'>
-													{`${el.surname} ${el.name} ${
-														el.patronymic != null ? el.patronymic : ''
-													}`}
-													{!el.isRegister && (
-														<Image
-															src={'/icons/warning.svg'}
-															alt='Незарегистрирован'
-															title='Незарегистрирован'
-															width={24}
-															height={21}
-															className='ml-[5px]'
-														/>
-													)}
-												</div>
-												<p className='text-[18px]'>{el.role.name}</p>
-												<p className='text-[18px]'>
-													{el.group_id && 'Группа: ' + el.group.name}
-												</p>
+												<div className='text-[20px] flex'>{el.name}</div>
 											</div>
 											<div className='flex justify-end items-end gap-[15px]'>
 												<Button
 													size='s'
 													onClick={() =>
 														setSidebar(
-															<UpdateUser
-																id={el.id}
+															<UpdateSubject
+																id={el.id!}
 																setSidebar={setSidebar}
 																setUpdate={setUpdate}
 																update={update}
-																groups={groupsData}
 															/>
 														)
 													}
@@ -194,12 +119,11 @@ export default function Users() {
 													variant='danger'
 													onClick={() =>
 														setSidebar(
-															<DeleteUser
-																id={el.id}
+															<DeleteSubject
+																id={el.id!}
 																setSidebar={setSidebar}
 																setUpdate={setUpdate}
 																update={update}
-																groups={groupsData}
 															/>
 														)
 													}

@@ -1,16 +1,17 @@
 'use client'
 
 import { Button, Skeleton, Spinner } from '@/app/BJComponents'
-import CreateSpeciality from '@/app/components/SpecialitySidebar/CreateSpeciality'
-import DeleteSpeciality from '@/app/components/SpecialitySidebar/DeleteSpeciality'
-import UpdateSpeciality from '@/app/components/SpecialitySidebar/UpdateSpeciality'
-import { ISpeciality } from '@/app/types/types'
+import CreateSubjectForGroup from '@/app/components/SubjectForGroupSidebar/CreateSubjecForGroup'
+import DeleteSubjectForGroup from '@/app/components/SubjectForGroupSidebar/DeleteSubjectForGroup'
+import UpdateSubjectForGroup from '@/app/components/SubjectForGroupSidebar/UpdateSubjectForGroup'
+import { IDataForSubject, ISubjectGroup } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-export default function Speciality() {
-	const [specialityData, setSpecialityData] = useState<any>()
+export default function SubjectsForGroups() {
+	const [subjectData, setSubjectData] = useState<any>()
+	const [dataForSubject, setDataForSubject] = useState<IDataForSubject>()
 	const [update, setUpdate] = useState<boolean>(false)
 	const [searchData, setSearchData] = useState<{
 		search: string
@@ -19,52 +20,64 @@ export default function Speciality() {
 	})
 	const [sidebar, setSidebar] = useState<any>(<Spinner />)
 
-	const getSpecialityData = () => {
+	const getSubjectData = () => {
 		const usersParams = new URLSearchParams()
 		searchData.search != '' && usersParams.set('search', searchData.search)
 		serverAPI
-			.get('/admin/getAllSpecialities?' + usersParams.toString(), {
+			.get('/admin/getAllSubjectsForGroups?' + usersParams.toString(), {
 				headers: {
 					Authorization: 'Bearer ' + localStorage.getItem('token'),
 				},
 			})
 			.then(e => {
-				setSpecialityData(e.data.message)
-				setSidebar(
-					<CreateSpeciality
-						setUpdate={setUpdate}
-						update={update}
-						setSidebar={setSidebar}
-					/>
-				)
+				setSubjectData(e.data.message)
+
+				serverAPI
+					.get('/admin/getAllDataForSubjects', {
+						headers: {
+							Authorization: 'Bearer ' + localStorage.getItem('token'),
+						},
+					})
+					.then(el => {
+						setDataForSubject(el.data.message)
+						setSidebar(
+							<CreateSubjectForGroup
+								setUpdate={setUpdate}
+								update={update}
+								dataForSubject={el.data.message}
+								setSidebar={setSidebar}
+							/>
+						)
+					})
 			})
 	}
 
 	useEffect(() => {
-		getSpecialityData()
+		getSubjectData()
 	}, [update])
 
 	useEffect(() => {
-		getSpecialityData()
+		getSubjectData()
 	}, [searchData])
 
 	return (
 		<>
 			<div className='flex justify-between pb-[30px]'>
-				<h2 className='text-[32px]'>Специальности</h2>
+				<h2 className='text-[32px]'>Предметы у групп</h2>
 				<Button
 					size='m'
 					onClick={() =>
 						setSidebar(
-							<CreateSpeciality
+							<CreateSubjectForGroup
 								setUpdate={setUpdate}
 								update={update}
+								dataForSubject={dataForSubject!}
 								setSidebar={setSidebar}
 							/>
 						)
 					}
 				>
-					Добавить специальность
+					Добавить предмет для группы
 				</Button>
 			</div>
 			<div className='w-full h-full max-h-full flex flex-col bg-[#232523] overflow-auto rounded-[10px]'>
@@ -81,8 +94,8 @@ export default function Speciality() {
 				<div className='w-full h-full flex overflow-auto'>
 					<div className='min-h-full w-5/8 border-r-[3px] border-[#1b1a17] overflow-auto'>
 						<div className='flex flex-col gap-[15px] p-[35px] min-h-full'>
-							{specialityData ? (
-								specialityData.map((el: ISpeciality) => {
+							{subjectData ? (
+								subjectData.map((el: ISubjectGroup) => {
 									return (
 										<div
 											key={el.id}
@@ -96,17 +109,27 @@ export default function Speciality() {
 												className='h-[100px] w-[100px]'
 											/>
 											<div className='flex flex-col justify-between w-full'>
-												<div className='text-[20px] flex'>{el.name}</div>
+												<div className='text-[20px] flex'>
+													Предмет: {el.subject.name}
+												</div>
+												<div className='text-[20px] flex'>
+													Группа: {el.group.name}
+												</div>
+												<div className='text-[20px] flex'>
+													Преподаватель: {el.teacher.surname} {el.teacher.name}{' '}
+													{el.teacher.patronymic ? el.teacher.patronymic : ''}
+												</div>
 											</div>
 											<div className='flex justify-end items-end gap-[15px]'>
 												<Button
 													size='s'
 													onClick={() =>
 														setSidebar(
-															<UpdateSpeciality
+															<UpdateSubjectForGroup
 																id={el.id!}
 																setSidebar={setSidebar}
 																setUpdate={setUpdate}
+																dataForSubject={dataForSubject!}
 																update={update}
 															/>
 														)
@@ -119,10 +142,11 @@ export default function Speciality() {
 													variant='danger'
 													onClick={() =>
 														setSidebar(
-															<DeleteSpeciality
+															<DeleteSubjectForGroup
 																id={el.id!}
 																setSidebar={setSidebar}
 																setUpdate={setUpdate}
+																dataForSubject={dataForSubject!}
 																update={update}
 															/>
 														)

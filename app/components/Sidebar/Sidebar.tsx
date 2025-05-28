@@ -52,16 +52,16 @@ const Sidebar = () => {
 		/>,
 		<MenuItem
 			title='Успеваемость'
-			logo='/icons/main.svg'
+			logo='/icons/grade.svg'
 			onClick={() => router.push('/grade')}
 			isActive={path.split('/')[1] == 'grade'}
 		/>,
-		<MenuItem
-			title='Зачетная книжка'
-			logo='/icons/main.svg'
-			onClick={() => router.push('/gradebook')}
-			isActive={path.split('/')[1] == 'gradebook'}
-		/>,
+		// <MenuItem
+		// 	title='Зачетная книжка'
+		// 	logo='/icons/main.svg'
+		// 	onClick={() => router.push('/gradebook')}
+		// 	isActive={path.split('/')[1] == 'gradebook'}
+		// />,
 	]
 
 	const teacherMenuItems = [
@@ -73,13 +73,13 @@ const Sidebar = () => {
 		/>,
 		<MenuItem
 			title='Мои группы'
-			logo='/icons/main.svg'
+			logo='/icons/groups.svg'
 			onClick={() => router.push('/mygroups')}
 			isActive={path.split('/')[1] == 'mygroups'}
 		/>,
 		<MenuItem
 			title='Журналы'
-			logo='/icons/main.svg'
+			logo='/icons/journal.svg'
 			onClick={() => router.push('/journals')}
 			isActive={path.split('/')[1] == 'journals'}
 		/>,
@@ -94,33 +94,39 @@ const Sidebar = () => {
 		/>,
 		<MenuItem
 			title='Новости'
-			logo='/icons/main.svg'
+			logo='/icons/news.svg'
 			onClick={() => router.push('/news')}
 			isActive={path.split('/')[1] == 'news'}
 		/>,
 		<MenuItem
 			title='Пользователи'
-			logo='/icons/main.svg'
+			logo='/icons/user.svg'
 			onClick={() => router.push('/users')}
 			isActive={path.split('/')[1] == 'users'}
 		/>,
 		<MenuItem
 			title='Специальности'
-			logo='/icons/main.svg'
+			logo='/icons/document.svg'
 			onClick={() => router.push('/speciality')}
 			isActive={path.split('/')[1] == 'speciality'}
 		/>,
 		<MenuItem
 			title='Группы'
-			logo='/icons/main.svg'
+			logo='/icons/groups.svg'
 			onClick={() => router.push('/groups')}
 			isActive={path.split('/')[1] == 'groups'}
 		/>,
 		<MenuItem
 			title='Предметы'
-			logo='/icons/main.svg'
+			logo='/icons/grade.svg'
 			onClick={() => router.push('/subjects')}
 			isActive={path.split('/')[1] == 'subjects'}
+		/>,
+		<MenuItem
+			title='Предметы у групп'
+			logo='/icons/subjectgroup.svg'
+			onClick={() => router.push('/subjectsForGroups')}
+			isActive={path.split('/')[1] == 'subjectsForGroups'}
 		/>,
 	]
 	const role = [
@@ -160,7 +166,9 @@ const Sidebar = () => {
 				userData ? (
 					<FooterItem
 						avatar='/icons/avatar.png'
-						name={`${userData.surname} ${userData.name[0]}. ${userData.patronymic[0]}.`}
+						name={`${userData.surname} ${userData.name[0]}. ${
+							userData.patronymic ? `${userData.patronymic[0]}.` : ''
+						}`}
 						role={role[userData.role_id - 1].name}
 						onClick={logout}
 					/>

@@ -73,7 +73,11 @@ export default function Home() {
 						>
 							Войти
 						</Button>
-						<Button size='xl' variant='outlined'>
+						<Button
+							size='xl'
+							variant='outlined'
+							onClick={() => router.push('/contacts')}
+						>
 							Подключить ОО
 						</Button>
 					</div>
@@ -127,6 +131,7 @@ export default function Home() {
 						}
 						className='w-[360px] h-[45px] text-[18px] px-[15px] rounded-[10px] bg-white text-black'
 					/>
+					<input type='submit' value='Войти' className='hidden' />
 				</form>
 			</Modal>
 		</>

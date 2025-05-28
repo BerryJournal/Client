@@ -1,40 +1,43 @@
 'use client'
 
 import { Button } from '@/app/BJComponents'
-import { IGroup } from '@/app/types/types'
+import { ISpeciality, IUser } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import { Dispatch } from 'react'
 import { toast } from 'react-toastify'
-import CreateUser from './CreateGroup'
+import CreateGroup from './CreateGroup'
 
-interface DeleteUserProps {
+interface DeleteGroupProps {
 	id: string
 	setSidebar: Dispatch<any>
 	setUpdate: Dispatch<boolean>
 	update: boolean
-	groups: IGroup[]
+	specialities: ISpeciality[]
+	teachers: IUser[]
 }
 
-const DeleteUser = ({
+const DeleteGroup = ({
 	id,
 	setSidebar,
 	setUpdate,
 	update,
-	groups,
-}: DeleteUserProps) => {
-	const deleteUser = () => {
+	specialities,
+	teachers,
+}: DeleteGroupProps) => {
+	const deleteGroup = () => {
 		serverAPI
-			.delete(`/admin/deleteUser/${id}`, {
+			.delete(`/admin/deleteGroup/${id}`, {
 				headers: {
 					Authorization: 'Bearer ' + localStorage.getItem('token'),
 				},
 			})
-			.then(e => toast('Пользователь удален!', { type: 'success' }))
+			.then(e => toast('Группа удалена!', { type: 'success' }))
 		setSidebar(
-			<CreateUser
+			<CreateGroup
 				setUpdate={setUpdate}
 				update={update}
-				groups={groups}
+				specialities={specialities}
+				teachers={teachers}
 				setSidebar={setSidebar}
 			/>
 		)
@@ -72,15 +75,15 @@ const DeleteUser = ({
 
 	return (
 		<div className='flex flex-col items-center h-full'>
-			<h3 className='text-[25px] mb-[30px] mx-[10px]'>Удаление пользователя</h3>
+			<h3 className='text-[25px] mb-[30px] mx-[10px]'>Удаление группы</h3>
 			<div className='h-full '>
 				<h3 className='text-[25px] mb-[30px] mx-[10px]'>
-					Подтвердите удаление пользователя
+					Подтвердите удаление группы
 				</h3>
 				<Button
 					width='max'
 					variant='danger'
-					onClick={deleteUser}
+					onClick={deleteGroup}
 					className='mb-[20px]'
 				>
 					Удалить
@@ -90,4 +93,4 @@ const DeleteUser = ({
 	)
 }
 
-export default DeleteUser
+export default DeleteGroup

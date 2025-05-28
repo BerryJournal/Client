@@ -41,7 +41,8 @@ export interface IGroup {
 	isArchive?: boolean
 	organization?: IOrganization
 	speciality?: ISpeciality
-	classroomTeacher?: IUser | null
+	classroom_teacher?: IUser | null
+	students?: IUser[] | null
 }
 
 export interface ISpeciality {
@@ -49,4 +50,22 @@ export interface ISpeciality {
 	name: string
 	organization_id?: string
 	organization?: IOrganization
+}
+
+export interface ISubject {
+	id?: string
+	name: string
+}
+
+export interface ISubjectGroup {
+	id?: string
+	subject: ISubject
+	group: IGroup
+	teacher: IUser
+}
+
+export interface IDataForSubject {
+	subjects: ISubject[]
+	groups: IGroup[]
+	teachers: IUser[]
 }
