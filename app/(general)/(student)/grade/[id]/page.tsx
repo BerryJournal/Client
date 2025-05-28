@@ -98,7 +98,7 @@ export default function Grade() {
 															</span>
 														) : (
 															<span className='text-[#9e9e9e] border-1 border-[#9e9e9e] text-[20px] h-[40px] w-[40px] rounded flex justify-center items-center'>
-																{el.date.marks[0].mark}
+																{el.marks[0].mark}
 															</span>
 														)
 													) : (
