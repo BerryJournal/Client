@@ -44,9 +44,9 @@ export default function Grade() {
 											<h4 className='text-[20px] font-light'>
 												{el.subject.name}
 											</h4>
-											<p className='text-[15px] text-[#969696]'>
+											{/* <p className='text-[15px] text-[#969696]'>
 												Последняя оценка - 5
-											</p>
+											</p> */}
 										</div>
 									</div>
 								)
