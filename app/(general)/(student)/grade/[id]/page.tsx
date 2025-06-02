@@ -90,7 +90,7 @@ export default function Grade() {
 															</span>
 														) : el.marks[0].mark == '1' ? (
 															<span className='text-[#fa1b1b] border-1 border-[#fa1b1b] text-[20px] h-[40px] w-[40px] rounded flex justify-center items-center'>
-																5
+																1
 															</span>
 														) : el.marks[0].mark == '0' ? (
 															<span className='text-[#fa1b1b] border-1 border-[#fa1b1b] text-[20px] h-[40px] w-[40px] rounded flex justify-center items-center'>
@@ -198,9 +198,15 @@ export default function Grade() {
 							</div>
 							<div className='w-1/6 h-[160px] p-[30px] text-center bg-[#232523] rounded-[10px]'>
 								<h3>Пропуски</h3>
-								<p className='text-[40px] text-[#1C9D0E]'>
-									{fetchData.skips_count}
-								</p>
+								{fetchData.skips_count == 0 ? (
+									<p className='text-[40px] text-[#1C9D0E]'>
+										{fetchData.skips_count}
+									</p>
+								) : (
+									<p className='text-[40px] text-[#fa1b1b]'>
+										{fetchData.skips_count}
+									</p>
+								)}
 							</div>
 							<div className='w-3/6 h-[160px] p-[30px] text-center bg-[#232523] rounded-[10px]'>
 								{/* <h3 className='text-lext'>Личный рейтинг</h3>

@@ -26,7 +26,7 @@ export default function Journals() {
 		<>
 			<h2 className='text-[32px] pb-[30px]'>Журналы</h2>
 			<div className='w-full max-h-full overflow-auto bg-[#232523] rounded-[10px] flex'>
-				<div className='p-[35px] min-w-max h-max border-r-[3px] border-[#1b1a17]'>
+				<div className='p-[35px] min-w-max h-full border-r-[3px] border-[#1b1a17]'>
 					<h3 className='text-[25px] mb-[10px]'>Группы</h3>
 					<div className='flex flex-col gap-[5px]'>
 						{fetchData ? (

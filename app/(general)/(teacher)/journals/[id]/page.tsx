@@ -210,17 +210,18 @@ export default function Journal() {
 														<React.Fragment key={index}>
 															{/* Колонка с датами и оценками */}
 															<div className='col'>
-																<div className='month'>
-																	<div className='min-w-[50px] w-full h-[50px] flex justify-center items-center border border-1 border-white truncate sticky top-0 bg-[#232523]'>
-																		{date.month}
-																	</div>
+																<div className='min-w-[50px] w-full h-[50px] flex justify-center items-center border border-1 border-white truncate sticky top-0 bg-[#232523]'>
+																	{date.month}
 																</div>
-																<div className='flex'>
+																<div className='flex w-max'>
 																	{date.days.map((day: any, index: number) => {
 																		return (
-																			<div className='col w-full' key={index}>
+																			<div
+																				className='col flex flex-col w-full'
+																				key={day.id}
+																			>
 																				<div
-																					className='min-w-[50px] w-full h-[50px] flex justify-center items-center border border-1 border-white sticky top-[50px] bg-[#232523] cursor-pointer transition-colors hover:bg-[#1B1A17]'
+																					className='w-[50px] h-[50px] flex justify-center items-center border border-1 border-white sticky top-[50px] bg-[#232523] cursor-pointer transition-colors hover:bg-[#1B1A17]'
 																					onClick={() => {
 																						setDateData({
 																							...dateData,
@@ -260,7 +261,7 @@ export default function Journal() {
 																									})
 																								}}
 																							>
-																								<div className='absolute right-[2px] top-[1px] text-[12px] text-[red]'>
+																								<div className='absolute right-[2px] top-[1px] text-[12px] font-bold text-[red]'>
 																									{day.skips.find(
 																										(x: any) =>
 																											x.student_id == student.id
@@ -350,14 +351,14 @@ export default function Journal() {
 									</div>
 									{/* Колонка со средним баллом */}
 									<div className='col'>
-										<div className='w-[50px] h-[100px] border border-1 border-white flex justify-center items-center sticky top-0 bg-[#232523] text-[18px]'>
+										<div className='w-[70px] h-[100px] border border-1 border-white flex justify-center items-center sticky top-0 bg-[#232523] text-[18px]'>
 											<p style={{ writingMode: 'sideways-lr' }}>Ср. балл</p>
 										</div>
 										{/* Ячейки */}
 										{fetchData.students.map((student: any) => {
 											return (
 												<div className='cells' key={student.id}>
-													<div className='w-[50px] h-[50px] flex justify-center items-center border border-1 border-white'>
+													<div className='w-[70px] h-[50px] flex justify-center items-center border border-1 border-white'>
 														{fetchData.average_marks.find(
 															(x: any) => x.student_id == student.id
 														)

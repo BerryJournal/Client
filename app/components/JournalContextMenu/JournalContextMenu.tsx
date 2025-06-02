@@ -34,7 +34,7 @@ const JournalContextMenu = ({
 
 	return (
 		<div
-			className={`bg-[#1B1A17] rounded-[10px] fixed p-[15px] hover:bg-[#262521] cursor-pointer`}
+			className={`bg-[#1B1A17] rounded-[10px] border-2 border-[#000] fixed p-[15px] hover:bg-[#262521] cursor-pointer`}
 			onContextMenu={e => e.preventDefault()}
 			style={{ top: `${position.y}px`, left: `${position.x}px` }}
 			onClick={() => skipFetch()}

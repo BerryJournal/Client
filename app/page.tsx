@@ -109,23 +109,29 @@ export default function Home() {
 						login()
 					}}
 				>
-					<label htmlFor='' className='text-[20px] mb-[5px]'>
+					<label htmlFor='email' className='text-[20px] mb-[5px]'>
 						Email
 					</label>
 					<input
-						type='text'
+						type='email'
+						name='email'
+						id='email'
+						autoComplete='email'
 						onChange={e => setData({ ...data, email: e.currentTarget.value })}
 						className='w-[360px] h-[45px] text-[18px] px-[15px] rounded-[10px] bg-white text-black'
 					/>
 
 					<label
-						htmlFor=''
+						htmlFor='password'
 						className='text-[20px] mb-[5px] mt-[15px] text-[18px]'
 					>
 						Пароль
 					</label>
 					<input
 						type='password'
+						name='password'
+						id='password'
+						autoComplete='password current-password'
 						onChange={e =>
 							setData({ ...data, password: e.currentTarget.value })
 						}

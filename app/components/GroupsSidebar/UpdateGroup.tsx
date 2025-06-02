@@ -189,6 +189,7 @@ const UpdateGroup = ({
 											setGroupData({
 												...groupData,
 												classroomTeacher_id: e.value,
+												classroom_teacher: e.label[0],
 											})
 										}}
 										noOptionsMessage={() => 'Нет подходящих преподавателей'}

@@ -68,25 +68,26 @@ export default function MyGroups() {
 							<>
 								<div className='p-[35px] h-full min-w-[50%] border-r-[3px] border-[#1b1a17]'>
 									<h3 className='text-[25px] mb-[10px]'>Предметы</h3>
-									{fetchData[currentPage].subjects.map((el: any) => {
-										return (
-											<div className='flex flex-col gap-[5px]' key={el.id}>
+									<div className='flex flex-col gap-[10px]'>
+										{fetchData[currentPage].subjects.map((el: any) => {
+											return (
 												<div
-													// onClick={() => router.push('/grade/123')}
+													onClick={() => router.push(`/mygroups/${el.id}`)}
+													key={el.id}
 													className='flex justify-between items-center p-[15px] w-full rounded-[5px] border-2 border-white transition-[0.3s] cursor-pointer hover:bg-[#1b1a17]'
 												>
 													<h4 className='text-[20px] font-light'>
 														{el.subject.name}
 													</h4>
-													{/* <img
+													<img
 														src='/icons/Arrow.svg'
 														className='ml-[10px]'
 														alt='Стрелка'
-													/> */}
+													/>
 												</div>
-											</div>
-										)
-									})}
+											)
+										})}
+									</div>
 								</div>
 								<div className='p-[35px] w-full h-max'>
 									{fetchData[currentPage].students.map((el: any) => {
