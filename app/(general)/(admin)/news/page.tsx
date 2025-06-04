@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from '@/app/BJComponents'
-import CreateUser from '@/app/components/UsersSidebar/CreateUser'
 import Image from 'next/image'
 
 export default function News() {
@@ -43,7 +42,7 @@ export default function News() {
 						</div>
 					</div>
 					<div className='h-full w-3/8 flex flex-col items-center overflow-auto p-[35px]'>
-						<CreateUser />
+						{/* <CreateUser /> */}
 					</div>
 				</div>
 			</div>

@@ -1,9 +1,13 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Suspense } from 'react'
 import { ToastContainer } from 'react-toastify'
+import { Spinner } from './BJComponents'
 import './globals.scss'
 
-const inter = Inter()
+const inter = Inter({
+	subsets: ['cyrillic', 'latin'],
+})
 
 export const metadata: Metadata = {
 	title: 'BerryJournal',
@@ -18,7 +22,15 @@ export default function RootLayout({
 	return (
 		<html lang='ru'>
 			<body className={`${inter.className} antialiased`}>
-				{children}
+				<Suspense
+					fallback={
+						<div>
+							<Spinner size='xl' />
+						</div>
+					}
+				>
+					{children}
+				</Suspense>
 				<ToastContainer
 					position='bottom-right'
 					autoClose={5000}
