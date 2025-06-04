@@ -92,12 +92,12 @@ const Sidebar = () => {
 			onClick={() => router.push('/main')}
 			isActive={path === '/main'}
 		/>,
-		<MenuItem
-			title='Новости'
-			logo='/icons/news.svg'
-			onClick={() => router.push('/news')}
-			isActive={path.split('/')[1] == 'news'}
-		/>,
+		// <MenuItem
+		// 	title='Новости'
+		// 	logo='/icons/news.svg'
+		// 	onClick={() => router.push('/news')}
+		// 	isActive={path.split('/')[1] == 'news'}
+		// />,
 		<MenuItem
 			title='Пользователи'
 			logo='/icons/user.svg'
