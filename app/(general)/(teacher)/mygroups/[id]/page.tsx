@@ -88,14 +88,14 @@ export default function MyGroupJournal() {
 																<div className='min-w-[50px] w-full h-[50px] flex justify-center items-center border border-1 border-white truncate sticky top-0 bg-[#232523]'>
 																	{date.month}
 																</div>
-																<div className='flex w-max'>
+																<div className='flex w-full'>
 																	{date.days.map((day: any, index: number) => {
 																		return (
 																			<div
 																				className='col flex flex-col w-full'
 																				key={day.id}
 																			>
-																				<div className='w-[50px] h-[50px] flex justify-center items-center border border-1 border-white sticky top-[50px] bg-[#232523]'>
+																				<div className='w-full h-[50px] flex justify-center items-center border border-1 border-white sticky top-[50px] bg-[#232523]'>
 																					{day.date.split('-')[2]}
 																				</div>
 																				{/* Ячейки с оценками*/}
@@ -114,7 +114,7 @@ export default function MyGroupJournal() {
 																										? 'Н'
 																										: ''}
 																								</div>
-																								<div className='w-[50px] h-[50px] flex justify-center items-center text-center border border-1 border-white'>
+																								<div className='w-full h-[50px] flex justify-center items-center text-center border border-1 border-white'>
 																									{day.marks.find(
 																										(x: any) =>
 																											x.student_id == student.id

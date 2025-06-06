@@ -69,3 +69,11 @@ export interface IDataForSubject {
 	groups: IGroup[]
 	teachers: IUser[]
 }
+
+export interface INews {
+	id?: string
+	tittle: string
+	content: string
+	organization_id?: string
+	created_at?: string
+}

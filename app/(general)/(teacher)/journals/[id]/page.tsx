@@ -221,7 +221,7 @@ export default function Journal() {
 																				key={day.id}
 																			>
 																				<div
-																					className='w-[50px] h-[50px] flex justify-center items-center border border-1 border-white sticky top-[50px] bg-[#232523] cursor-pointer transition-colors hover:bg-[#1B1A17]'
+																					className='w-full h-[50px] flex justify-center items-center border border-1 border-white sticky top-[50px] bg-[#232523] cursor-pointer transition-colors hover:bg-[#1B1A17]'
 																					onClick={() => {
 																						setDateData({
 																							...dateData,
@@ -270,7 +270,11 @@ export default function Journal() {
 																										: ''}
 																								</div>
 																								<input
-																									className='w-[50px] h-[50px] flex justify-center items-center text-center border border-1 border-white'
+																									className={`${
+																										date.days.length == 1
+																											? 'w-[96px]'
+																											: 'w-[50px]'
+																									} h-[50px] flex justify-center items-center text-center border border-1 border-white`}
 																									onChange={e => {
 																										if (
 																											e.currentTarget.value ==

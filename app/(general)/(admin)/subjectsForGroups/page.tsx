@@ -4,6 +4,7 @@ import { Button, Skeleton, Spinner } from '@/app/BJComponents'
 import CreateSubjectForGroup from '@/app/components/SubjectForGroupSidebar/CreateSubjecForGroup'
 import DeleteSubjectForGroup from '@/app/components/SubjectForGroupSidebar/DeleteSubjectForGroup'
 import UpdateSubjectForGroup from '@/app/components/SubjectForGroupSidebar/UpdateSubjectForGroup'
+import { useDebounce } from '@/app/hooks/useDebaunce'
 import { IDataForSubject, ISubjectGroup } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
@@ -18,6 +19,7 @@ export default function SubjectsForGroups() {
 	}>({
 		search: '',
 	})
+	const debouncedSearch = useDebounce(searchData.search, 500)
 	const [sidebar, setSidebar] = useState<any>(<Spinner />)
 
 	const getSubjectData = () => {
@@ -58,7 +60,7 @@ export default function SubjectsForGroups() {
 
 	useEffect(() => {
 		getSubjectData()
-	}, [searchData])
+	}, [debouncedSearch])
 
 	return (
 		<>

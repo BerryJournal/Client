@@ -4,6 +4,7 @@ import { Button, Skeleton, Spinner } from '@/app/BJComponents'
 import CreateGroup from '@/app/components/GroupsSidebar/CreateGroup'
 import DeleteGroup from '@/app/components/GroupsSidebar/DeleteGroup'
 import UpdateGroup from '@/app/components/GroupsSidebar/UpdateGroup'
+import { useDebounce } from '@/app/hooks/useDebaunce'
 import { IGroup, ISpeciality, IUser } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
@@ -19,6 +20,7 @@ export default function Users() {
 	}>({
 		search: '',
 	})
+	const debouncedSearch = useDebounce(searchData.search, 500)
 	const [sidebar, setSidebar] = useState<any>(<Spinner />)
 
 	const getGroupsData = () => {
@@ -72,7 +74,7 @@ export default function Users() {
 
 	useEffect(() => {
 		getGroupsData()
-	}, [searchData])
+	}, [debouncedSearch])
 
 	return (
 		<>

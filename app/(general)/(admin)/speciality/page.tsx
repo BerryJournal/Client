@@ -4,6 +4,7 @@ import { Button, Skeleton, Spinner } from '@/app/BJComponents'
 import CreateSpeciality from '@/app/components/SpecialitySidebar/CreateSpeciality'
 import DeleteSpeciality from '@/app/components/SpecialitySidebar/DeleteSpeciality'
 import UpdateSpeciality from '@/app/components/SpecialitySidebar/UpdateSpeciality'
+import { useDebounce } from '@/app/hooks/useDebaunce'
 import { ISpeciality } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
@@ -17,6 +18,7 @@ export default function Speciality() {
 	}>({
 		search: '',
 	})
+	const debouncedSearch = useDebounce(searchData.search, 500)
 	const [sidebar, setSidebar] = useState<any>(<Spinner />)
 
 	const getSpecialityData = () => {
@@ -46,7 +48,7 @@ export default function Speciality() {
 
 	useEffect(() => {
 		getSpecialityData()
-	}, [searchData])
+	}, [debouncedSearch])
 
 	return (
 		<>

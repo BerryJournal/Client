@@ -1,3 +1,4 @@
+import { ReactElement } from 'react'
 import './Button.scss'
 
 export interface ButtonProps {
@@ -15,7 +16,7 @@ export interface ButtonProps {
 		| 'outlined-danger'
 		| 'outlined-utility'
 	size?: 's' | 'm' | 'l' | 'xl'
-	children: string
+	children: string | ReactElement<any, any>
 	disabled?: boolean
 	width?: 'auto' | 'max'
 	styles?: {}

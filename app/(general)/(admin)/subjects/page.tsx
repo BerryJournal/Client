@@ -4,6 +4,7 @@ import { Button, Skeleton, Spinner } from '@/app/BJComponents'
 import CreateSubject from '@/app/components/SubjectSidebar/CreateSubject'
 import DeleteSubject from '@/app/components/SubjectSidebar/DeleteSubject'
 import UpdateSubject from '@/app/components/SubjectSidebar/UpdateSubject'
+import { useDebounce } from '@/app/hooks/useDebaunce'
 import { ISubject } from '@/app/types/types'
 import { serverAPI } from '@/app/utils/axios'
 import Image from 'next/image'
@@ -17,6 +18,7 @@ export default function Subjects() {
 	}>({
 		search: '',
 	})
+	const debouncedSearch = useDebounce(searchData.search, 500)
 	const [sidebar, setSidebar] = useState<any>(<Spinner />)
 
 	const getSubjectData = () => {
@@ -46,7 +48,7 @@ export default function Subjects() {
 
 	useEffect(() => {
 		getSubjectData()
-	}, [searchData])
+	}, [debouncedSearch])
 
 	return (
 		<>
